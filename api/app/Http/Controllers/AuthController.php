@@ -19,6 +19,9 @@ class AuthController extends Controller
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
+        ], [], [
+            'email' => 'e-mail',
+            'password' => 'senha',
         ]);
 
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
@@ -43,6 +46,10 @@ class AuthController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'confirmed', Password::defaults()],
+        ], [], [
+            'name' => 'nome',
+            'email' => 'e-mail',
+            'password' => 'senha',
         ]);
 
         $user = User::create($data);
