@@ -5,18 +5,24 @@
 @section('content')
     <h1>Detalhes do Agendamento</h1>
 
+    <div class="servico-resumo">
+        @include('partials.servico_media', ['servico' => $agendamento->servico])
+        <div class="servico-resumo__info">
+            <h2>{{ $agendamento->servico->nome }}</h2>
+            <p>{{ $agendamento->servico->descricao }}</p>
+            <small>Prestador: {{ $agendamento->servico->prestador->name }}</small>
+        </div>
+    </div>
+
     <dl class="details">
-        <dt>Serviço</dt>
-        <dd>{{ $agendamento->servico->nome }}</dd>
+        <dt>Data</dt>
+        <dd>{{ $agendamento->data_hora->format('d/m/Y') }}</dd>
 
-        <dt>Prestador</dt>
-        <dd>{{ $agendamento->servico->prestador->name }}</dd>
-
-        <dt>Data e hora</dt>
-        <dd>{{ $agendamento->data_hora->format('d/m/Y H:i') }}</dd>
+        <dt>Hora</dt>
+        <dd>{{ $agendamento->data_hora->format('H:i') }}</dd>
 
         <dt>Status</dt>
-        <dd><span class="badge">{{ $agendamento->status }}</span></dd>
+        <dd><span class="badge badge--{{ $agendamento->status }}">{{ $agendamento->statusLabel() }}</span></dd>
 
         @if ($agendamento->observacoes)
             <dt>Observações</dt>
@@ -24,8 +30,12 @@
         @endif
     </dl>
 
+    @include('partials.agendamento_acoes_status', ['agendamento' => $agendamento])
+
     <div class="options">
-        <a href="{{ route('agendamentos.edit', $agendamento) }}" class="btn primary">Editar</a>
+        @if ($agendamento->isPendente())
+            <a href="{{ route('agendamentos.edit', $agendamento) }}" class="btn secondary">Editar dados</a>
+        @endif
         <a href="{{ route('agendamentos.index') }}" class="btn tertiary">Voltar</a>
     </div>
 @endsection
