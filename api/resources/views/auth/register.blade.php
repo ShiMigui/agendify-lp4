@@ -3,9 +3,8 @@
 @section('title', 'Cadastro')
 
 @section('content')
-    <h1>Criar conta</h1>
-
     <form action="{{ route('register') }}" method="POST" class="auth-form">
+        <h1>Criar conta</h1>
         @csrf
 
         <div class="input-field">
@@ -29,7 +28,7 @@
         </div>
 
         <div class="options">
-            <button type="submit" class="primary">Cadastrar</button>
+            <button type="submit" class="btn primary">Cadastrar</button>
             <a href="{{ route('login') }}" class="btn secondary">Já tenho conta</a>
         </div>
     </form>
