@@ -18,5 +18,11 @@ Route::middleware('auth')->group(function () {
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
     Route::resource('servicos', ServicoController::class);
-    Route::resource('agendamentos', AgendamentoController::class);
+    Route::get('servicos/{servico}/agendar', [AgendamentoController::class, 'create'])
+        ->name('agendamentos.create');
+    Route::patch('agendamentos/{agendamento}/concluir', [AgendamentoController::class, 'concluir'])
+        ->name('agendamentos.concluir');
+    Route::patch('agendamentos/{agendamento}/cancelar', [AgendamentoController::class, 'cancelar'])
+        ->name('agendamentos.cancelar');
+    Route::resource('agendamentos', AgendamentoController::class)->except(['create']);
 });

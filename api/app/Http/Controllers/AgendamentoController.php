@@ -14,22 +14,31 @@ class AgendamentoController extends Controller
         $agendamentos = Auth::user()
             ->agendamentos()
             ->with('servico.prestador')
-            ->latest()
+            ->orderBy('data_hora')
             ->get();
 
-        return view('agendamentos.index', compact('agendamentos'));
+        return view('agendamentos.index', [
+            'pendentes' => $agendamentos->where('status', 'pendente')->values(),
+            'concluidos' => $agendamentos->where('status', 'confirmado')->values(),
+            'cancelados' => $agendamentos->where('status', 'cancelado')->values(),
+        ]);
     }
 
-    public function create()
+    public function create(Servico $servico)
     {
-        $servicos = Servico::with('prestador')->orderBy('nome')->get();
+        $this->authorizeServicoAgendavel($servico);
 
-        return view('agendamentos.create', compact('servicos'));
+        $servico->load('prestador');
+
+        return view('agendamentos.create', compact('servico'));
     }
 
     public function store(AgendamentoRequest $request)
     {
-        Auth::user()->agendamentos()->create($request->validated());
+        $data = $request->agendamentoData();
+        $data['status'] = 'pendente';
+
+        Auth::user()->agendamentos()->create($data);
 
         return redirect()
             ->route('agendamentos.index')
@@ -49,20 +58,44 @@ class AgendamentoController extends Controller
     {
         $this->authorizeAgendamento($agendamento);
 
-        $servicos = Servico::with('prestador')->orderBy('nome')->get();
+        $agendamento->load('servico.prestador');
 
-        return view('agendamentos.edit', compact('agendamento', 'servicos'));
+        return view('agendamentos.edit', compact('agendamento'));
     }
 
     public function update(AgendamentoRequest $request, Agendamento $agendamento)
     {
         $this->authorizeAgendamento($agendamento);
 
-        $agendamento->update($request->validated());
+        $agendamento->update($request->agendamentoData());
 
         return redirect()
             ->route('agendamentos.index')
             ->with('success', 'Agendamento atualizado.');
+    }
+
+    public function concluir(Agendamento $agendamento)
+    {
+        $this->authorizeAgendamento($agendamento);
+        $this->authorizeStatusPendente($agendamento);
+
+        $agendamento->update(['status' => 'confirmado']);
+
+        return redirect()
+            ->route('agendamentos.index')
+            ->with('success', 'Agendamento concluído.');
+    }
+
+    public function cancelar(Agendamento $agendamento)
+    {
+        $this->authorizeAgendamento($agendamento);
+        $this->authorizeStatusPendente($agendamento);
+
+        $agendamento->update(['status' => 'cancelado']);
+
+        return redirect()
+            ->route('agendamentos.index')
+            ->with('success', 'Agendamento cancelado.');
     }
 
     public function destroy(Agendamento $agendamento)
@@ -79,5 +112,19 @@ class AgendamentoController extends Controller
     private function authorizeAgendamento(Agendamento $agendamento): void
     {
         abort_unless($agendamento->user_id === Auth::id(), 403);
+    }
+
+    private function authorizeServicoAgendavel(Servico $servico): void
+    {
+        abort_if(
+            $servico->user_id === Auth::id(),
+            403,
+            'Você não pode agendar seu próprio serviço.'
+        );
+    }
+
+    private function authorizeStatusPendente(Agendamento $agendamento): void
+    {
+        abort_unless($agendamento->isPendente(), 403, 'Apenas agendamentos pendentes podem ser alterados.');
     }
 }

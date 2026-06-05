@@ -3,20 +3,29 @@
 @section('title', $servico->nome)
 
 @section('content')
-    <h1>{{ $servico->nome }}</h1>
+    <article class="servico-detalhe">
+        @include('partials.servico_media', ['servico' => $servico])
 
-    @if ($servico->thumb)
-        <img src="{{ asset('storage/' . $servico->thumb) }}" alt="{{ $servico->nome }}" class="thumb">
-    @endif
-
-    <p>{{ $servico->descricao }}</p>
-    <p><strong>Prestador:</strong> {{ $servico->prestador->name }}</p>
+        <div class="servico-detalhe__body">
+            <h1>{{ $servico->nome }}</h1>
+            <p class="servico-detalhe__descricao">{{ $servico->descricao }}</p>
+            <p class="servico-detalhe__prestador">
+                <strong>Prestador:</strong> {{ $servico->prestador->name }}
+            </p>
+        </div>
+    </article>
 
     <div class="options">
-        <a href="{{ route('agendamentos.create', ['servico_id' => $servico->id]) }}" class="btn primary">Agendar</a>
+        @if ($servico->user_id !== auth()->id())
+            <a href="{{ route('agendamentos.create', $servico) }}" class="btn primary">Agendar</a>
+        @else
+            <span class="aviso">Este é o seu serviço — agendamento não disponível.</span>
+        @endif
+
         @if ($servico->user_id === auth()->id())
             <a href="{{ route('servicos.edit', $servico) }}" class="btn secondary">Editar</a>
         @endif
+
         <a href="{{ route('servicos.index') }}" class="btn tertiary">Voltar</a>
     </div>
 @endsection

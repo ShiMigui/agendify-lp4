@@ -10,14 +10,14 @@
             <h2>Meus agendamentos</h2>
             @if ($agendamentos->isEmpty())
                 <p>Nenhum agendamento ainda.</p>
-                <a href="{{ route('agendamentos.create') }}" class="btn primary">Agendar serviço</a>
+                <a href="{{ route('servicos.index') }}" class="btn primary">Ver serviços</a>
             @else
                 <ul class="list">
                     @foreach ($agendamentos as $agendamento)
                         <li>
                             <strong>{{ $agendamento->servico->nome }}</strong>
                             — {{ $agendamento->data_hora->format('d/m/Y H:i') }}
-                            <span class="badge">{{ $agendamento->status }}</span>
+                            <span class="badge badge--{{ $agendamento->status }}">{{ $agendamento->statusLabel() }}</span>
                         </li>
                     @endforeach
                 </ul>

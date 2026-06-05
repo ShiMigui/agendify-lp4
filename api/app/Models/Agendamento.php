@@ -31,4 +31,19 @@ class Agendamento extends Model
     {
         return $this->belongsTo(Servico::class);
     }
+
+    public function isPendente(): bool
+    {
+        return $this->status === 'pendente';
+    }
+
+    public function statusLabel(): string
+    {
+        return match ($this->status) {
+            'pendente' => 'Pendente',
+            'confirmado' => 'Concluído',
+            'cancelado' => 'Cancelado',
+            default => ucfirst($this->status),
+        };
+    }
 }
