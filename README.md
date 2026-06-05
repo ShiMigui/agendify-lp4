@@ -25,11 +25,13 @@ Agendamento N ──pertence a──> 1 Servico
 
 ## Como executar
 
-1. Copie o arquivo de ambiente:
+1. Copie o arquivo de ambiente na raiz do projeto (usado pelo Docker e pelo Laravel):
 
 ```bash
 cp .env.example .env
 ```
+
+> O `.env` da raiz é montado automaticamente em `api/.env` dentro do container.
 
 2. Suba os containers:
 
