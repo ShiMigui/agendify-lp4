@@ -36,20 +36,20 @@ Agendamento N ──pertence a──> 1 Servico
 cp .env.example .env
 ```
 
-> O `.env` da raiz é montado automaticamente em `api/.env` dentro do container.
+> O `.env` da raiz é passado automaticamente dentro do docker-compose.
 
-2. Suba os containers:
+1. Suba os containers:
 
 ```bash
 docker compose up --build
 ```
 
-3. Acesse a aplicação:
+1. Acesse a aplicação:
 
-- **App:** http://localhost:8000
-- **phpMyAdmin:** http://localhost:8080
+- **App:** <http://localhost:8000>
+- **phpMyAdmin:** <http://localhost:8080>
 
-4. (Opcional) Popule o banco com dados de exemplo:
+1. (Opcional) Popule o banco com dados de exemplo:
 
 ```bash
 docker compose exec api php artisan db:seed
@@ -59,8 +59,8 @@ Usuários de exemplo após o seed:
 
 | E-mail | Senha |
 |--------|-------|
-| joao@agendify.com | password |
-| maria@agendify.com | password |
+| <joao@agendify.com> | password |
+| <maria@agendify.com> | password |
 
 ## Fluxo de agendamento
 
