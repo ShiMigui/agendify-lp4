@@ -3,7 +3,26 @@ FROM php:8.4-cli
 WORKDIR /var/www/html
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-COPY . .
+
+COPY ./app .
+COPY ./bootstrap .
+COPY ./config .
+COPY ./database .
+COPY ./lang .
+COPY ./public .
+COPY ./resources .
+COPY ./routes .
+COPY ./storage .
+COPY ./tests .
+COPY ./.env .
+COPY ./.npmrc .
+COPY ./artisan .
+COPY ./composer.json .
+COPY ./composer.lock .
+COPY ./package-lock.json .
+COPY ./package.json .
+COPY ./phpunit.xml .
+COPY ./vite.config.js .
 
 RUN apt-get update && apt-get install -y \
     git curl unzip zip libonig-dev ca-certificates \
@@ -13,8 +32,7 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     \
     && composer install --no-dev --optimize-autoloader --prefer-dist --no-interaction \
-    && npm install --ignore-scripts \
-    && npm run build
+    && npm install && npm run build
 
 EXPOSE 8000
 
