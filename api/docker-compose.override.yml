@@ -1,0 +1,11 @@
+services:
+  api:
+    volumes: [./api:/var/www/html]
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: unless-stopped
+    ports: ["8080:80"]
+    environment:
+      PMA_HOST: $DB_CONNECTION
+    depends_on: [mysql]
