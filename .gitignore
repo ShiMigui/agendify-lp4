@@ -12,3 +12,4 @@ node_modules/
 .nova/
 .cursor/
 auth.json
+.php-cs-fixer.cache
