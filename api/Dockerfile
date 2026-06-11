@@ -4,35 +4,22 @@ WORKDIR /var/www/html
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-COPY ./app .
-COPY ./bootstrap .
-COPY ./config .
-COPY ./database .
-COPY ./lang .
-COPY ./public .
-COPY ./resources .
-COPY ./routes .
-COPY ./storage .
-COPY ./tests .
-COPY ./.env .
-COPY ./.npmrc .
-COPY ./artisan .
-COPY ./composer.json .
-COPY ./composer.lock .
-COPY ./package-lock.json .
-COPY ./package.json .
-COPY ./phpunit.xml .
-COPY ./vite.config.js .
+COPY . .
 
 RUN apt-get update && apt-get install -y \
     git curl unzip zip libonig-dev ca-certificates \
     && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
     && apt-get install -y nodejs \
     && docker-php-ext-install pdo_mysql mbstring bcmath \
-    && apt-get clean \
-    \
-    && composer install --no-dev --optimize-autoloader --prefer-dist --no-interaction \
-    && npm install && npm run build
+    && apt-get clean
+
+RUN composer install \
+    --no-dev \
+    --optimize-autoloader \
+    --prefer-dist \
+    --no-interaction
+
+RUN npm ci && npm run build
 
 EXPOSE 8000
 
