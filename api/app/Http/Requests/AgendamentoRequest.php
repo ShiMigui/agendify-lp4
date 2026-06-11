@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use App\Models\Servico;
@@ -41,13 +43,13 @@ class AgendamentoRequest extends FormRequest
                 return;
             }
 
-            if (! $this->filled(['data', 'hora'])) {
+            if (!$this->filled(['data', 'hora'])) {
                 return;
             }
 
             $dataHora = Carbon::createFromFormat(
                 'Y-m-d H:i',
-                $this->input('data') . ' ' . $this->input('hora')
+                $this->input('data').' '.$this->input('hora')
             );
 
             if ($this->isMethod('post') && $dataHora->lte(now())) {
@@ -63,7 +65,7 @@ class AgendamentoRequest extends FormRequest
     {
         $dataHora = Carbon::createFromFormat(
             'Y-m-d H:i',
-            $this->validated('data') . ' ' . $this->validated('hora')
+            $this->validated('data').' '.$this->validated('hora')
         );
 
         return [

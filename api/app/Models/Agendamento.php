@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -34,7 +36,7 @@ class Agendamento extends Model
 
     public function isPendente(): bool
     {
-        return $this->status === 'pendente';
+        return 'pendente' === $this->status;
     }
 
     public function statusLabel(): string
