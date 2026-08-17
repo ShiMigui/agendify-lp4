@@ -13,7 +13,6 @@ class ServicoController extends Controller
     public function index()
     {
         $servicos = Servico::with('prestador')->latest()->get();
-
         return view('servicos.index', compact('servicos'));
     }
 
